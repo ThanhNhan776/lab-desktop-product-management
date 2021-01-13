@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 public class LoginForm extends javax.swing.JFrame {
 
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     private static LoginForm loginForm;
     private static ProductManagementForm productManagementForm;
