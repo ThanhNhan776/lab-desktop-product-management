@@ -147,7 +147,6 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         btnSaveCategory.setText("Save");
         btnSaveCategory.setToolTipText("");
-        btnSaveCategory.setEnabled(false);
         btnSaveCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveCategoryActionPerformed(evt);
@@ -306,7 +305,6 @@ public class ProductManagementForm extends javax.swing.JFrame {
         isAddingNewCategory = true;
         btnNewCategory.setEnabled(false);
         btnDeleteCategory.setEnabled(false);
-        btnSaveCategory.setEnabled(true);
         btnCancelCategory.setEnabled(true);
         txtCategoryId.setEditable(true);
         txtCategoryId.setText("");
@@ -319,7 +317,6 @@ public class ProductManagementForm extends javax.swing.JFrame {
         isAddingNewCategory = false;
         btnNewCategory.setEnabled(true);
         btnDeleteCategory.setEnabled(selectedCategory != null);
-        btnSaveCategory.setEnabled(false);
         btnCancelCategory.setEnabled(false);
         displaySelectedCategory();
     }//GEN-LAST:event_btnCancelCategoryActionPerformed
@@ -335,8 +332,12 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 categoryDao.saveCategory(category);
                 loadData();
                 btnCancelCategoryActionPerformed(null);
-            } else {
-
+            } else if (selectedCategory != null) {
+                selectedCategory.setName(name);
+                selectedCategory.setDescription(description);
+                categoryDao.updateCategory(selectedCategory);
+                loadData();
+                btnCancelCategoryActionPerformed(null);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());

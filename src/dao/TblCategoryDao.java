@@ -78,4 +78,33 @@ public class TblCategoryDao {
         }
         return null;
     }
+    
+    public TblCategory updateCategory(TblCategory category) throws ClassNotFoundException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        try {
+            con = DBUtils.getConnection();
+            if (con != null) {
+                String sql = "update TblCategories "
+                        + "set categoryName = ?, description = ? "
+                        + "where categoryId = ?";
+                stm = con.prepareStatement(sql);
+                stm.setString(1, category.getName());
+                stm.setString(2, category.getDescription());
+                stm.setString(3, category.getCategoryId());
+                int result = stm.executeUpdate();
+                if (result == 1) {
+                    return category;
+                }
+            }
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
 }
