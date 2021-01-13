@@ -11,6 +11,8 @@ import entity.TblUser;
 import form.table.CategoriesTableModel;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class ProductManagementForm extends javax.swing.JFrame {
@@ -21,30 +23,31 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
     private boolean isAddingNewCategory = false;
 
-    public TblUser getUser() {
-        return user;
-    }
-
-    public void setUser(TblUser user) {
-        this.user = user;
-    }
+    private TblCategoryDao categoryDao = new TblCategoryDao();
 
     /**
      * Creates new form ProductManagementForm
      */
     public ProductManagementForm() {
         initComponents();
-        initModels();
+        loadData();
     }
 
-    private void initModels() {
-        TblCategoryDao categoryDao = new TblCategoryDao();
+    private void loadData() {
         try {
             categories = categoryDao.getAllCategories();
             tblCategories.setModel(new CategoriesTableModel(categories));
         } catch (SQLException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
+    }
+
+    public TblUser getUser() {
+        return user;
+    }
+
+    public void setUser(TblUser user) {
+        this.user = user;
     }
 
     /**
@@ -144,14 +147,22 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         btnSaveCategory.setText("Save");
         btnSaveCategory.setToolTipText("");
+        btnSaveCategory.setEnabled(false);
+        btnSaveCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveCategoryActionPerformed(evt);
+            }
+        });
 
         btnDeleteCategory.setText("Delete");
+        btnDeleteCategory.setEnabled(false);
 
         txtCategoryDescription.setColumns(20);
         txtCategoryDescription.setRows(5);
         jScrollPane2.setViewportView(txtCategoryDescription);
 
         btnCancelCategory.setText("Cancel");
+        btnCancelCategory.setEnabled(false);
         btnCancelCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelCategoryActionPerformed(evt);
@@ -178,7 +189,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane2))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnNewCategory)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSaveCategory)
@@ -287,12 +298,16 @@ public class ProductManagementForm extends javax.swing.JFrame {
     private void tblCategoriesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCategoriesMouseClicked
         int index = tblCategories.getSelectedRow();
         selectedCategory = categories.get(index);
+        btnDeleteCategory.setEnabled(true);
         displaySelectedCategory();
     }//GEN-LAST:event_tblCategoriesMouseClicked
 
     private void btnNewCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCategoryActionPerformed
         isAddingNewCategory = true;
+        btnNewCategory.setEnabled(false);
         btnDeleteCategory.setEnabled(false);
+        btnSaveCategory.setEnabled(true);
+        btnCancelCategory.setEnabled(true);
         txtCategoryId.setEditable(true);
         txtCategoryId.setText("");
         txtCategoryName.setText("");
@@ -302,9 +317,43 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
     private void btnCancelCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelCategoryActionPerformed
         isAddingNewCategory = false;
-        btnDeleteCategory.setEnabled(true);
+        btnNewCategory.setEnabled(true);
+        btnDeleteCategory.setEnabled(selectedCategory != null);
+        btnSaveCategory.setEnabled(false);
+        btnCancelCategory.setEnabled(false);
         displaySelectedCategory();
     }//GEN-LAST:event_btnCancelCategoryActionPerformed
+
+    private void btnSaveCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveCategoryActionPerformed
+        String id = txtCategoryId.getText();
+        String name = txtCategoryName.getText();
+        String description = txtCategoryDescription.getText();
+        try {
+            if (isAddingNewCategory) {
+                TblCategory category = new TblCategory(id, name, description);
+                this.checkCategoryValidation(category);
+                categoryDao.saveCategory(category);
+                loadData();
+                btnCancelCategoryActionPerformed(null);
+            } else {
+
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }//GEN-LAST:event_btnSaveCategoryActionPerformed
+
+    private void checkCategoryValidation(TblCategory category) throws Exception {
+        if (category == null) {
+            throw new Exception("Empty category!");
+        }
+        if (category.getCategoryId() == null || category.getCategoryId().isEmpty()) {
+            throw new Exception("Id must not be empty!");
+        }
+        if (category.getName() == null || category.getName().isEmpty()) {
+            throw new Exception("Name must not be empty!");
+        }
+    }
 
     private void displaySelectedCategory() {
         txtCategoryId.setEditable(false);

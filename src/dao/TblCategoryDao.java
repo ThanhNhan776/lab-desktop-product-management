@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package dao;
 
 import entity.TblCategory;
@@ -15,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import utils.DBUtils;
 
-
 public class TblCategoryDao {
-public List<TblCategory> getAllCategories() throws SQLException, ClassNotFoundException {
+
+    public List<TblCategory> getAllCategories() throws SQLException, ClassNotFoundException {
         Connection con = null;
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -42,6 +41,34 @@ public List<TblCategory> getAllCategories() throws SQLException, ClassNotFoundEx
             if (rs != null) {
                 rs.close();
             }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
+    
+    public TblCategory saveCategory(TblCategory category) throws ClassNotFoundException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        try {
+            con = DBUtils.getConnection();
+            if (con != null) {
+                String sql = "insert into TblCategories(categoryId, categoryName, description) "
+                        + "values(?, ?, ?)";
+                stm = con.prepareStatement(sql);
+                stm.setString(1, category.getCategoryId());
+                stm.setString(2, category.getName());
+                stm.setString(3, category.getDescription());
+                int result = stm.executeUpdate();
+                if (result == 1) {
+                    return category;
+                }
+            }
+        } finally {
             if (stm != null) {
                 stm.close();
             }
