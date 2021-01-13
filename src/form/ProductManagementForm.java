@@ -155,6 +155,11 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         btnDeleteCategory.setText("Delete");
         btnDeleteCategory.setEnabled(false);
+        btnDeleteCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteCategoryActionPerformed(evt);
+            }
+        });
 
         txtCategoryDescription.setColumns(20);
         txtCategoryDescription.setRows(5);
@@ -345,6 +350,25 @@ public class ProductManagementForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSaveCategoryActionPerformed
 
+    private void btnDeleteCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCategoryActionPerformed
+        if (selectedCategory != null) {
+            try {
+                int response = JOptionPane.showConfirmDialog(null,
+                        "Do you want to delete this category?", "Delete",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (response == JOptionPane.NO_OPTION) {
+                    return;
+                }
+                categoryDao.deleteCategory(selectedCategory);
+                loadData();
+                this.selectedCategory = null;
+                btnCancelCategoryActionPerformed(null);
+            } catch (SQLException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnDeleteCategoryActionPerformed
+
     private void checkCategoryValidation(TblCategory category) throws Exception {
         if (category == null) {
             throw new Exception("Empty category!");
@@ -364,10 +388,14 @@ public class ProductManagementForm extends javax.swing.JFrame {
             txtCategoryName.setText(selectedCategory.getName());
             txtCategoryDescription.setText(selectedCategory.getDescription());
         } else {
-            txtCategoryId.setText("");
-            txtCategoryName.setText("");
-            txtCategoryDescription.setText("");
+            clearCategoryDetailsDisplay();
         }
+    }
+
+    private void clearCategoryDetailsDisplay() {
+        txtCategoryId.setText("");
+        txtCategoryName.setText("");
+        txtCategoryDescription.setText("");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

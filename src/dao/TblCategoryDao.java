@@ -107,4 +107,30 @@ public class TblCategoryDao {
         }
         return null;
     }
+    
+    public TblCategory deleteCategory(TblCategory category) throws SQLException, ClassNotFoundException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        try {
+            con = DBUtils.getConnection();
+            if (con != null) {
+                String sql = "delete from TblCategories "
+                        + "where categoryId = ?";
+                stm = con.prepareStatement(sql);
+                stm.setString(1, category.getCategoryId());
+                int result = stm.executeUpdate();
+                if (result == 1) {
+                    return category;
+                }
+            }
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
 }
