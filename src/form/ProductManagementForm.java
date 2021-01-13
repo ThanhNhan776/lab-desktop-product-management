@@ -17,6 +17,9 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
     private TblUser user;
     private List<TblCategory> categories;
+    private TblCategory selectedCategory;
+
+    private boolean isAddingNewCategory = false;
 
     public TblUser getUser() {
         return user;
@@ -33,7 +36,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
         initComponents();
         initModels();
     }
-    
+
     private void initModels() {
         TblCategoryDao categoryDao = new TblCategoryDao();
         try {
@@ -60,6 +63,17 @@ public class ProductManagementForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCategories = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txtCategoryId = new javax.swing.JTextField();
+        jlabel = new javax.swing.JLabel();
+        txtCategoryName = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        btnNewCategory = new javax.swing.JButton();
+        btnSaveCategory = new javax.swing.JButton();
+        btnDeleteCategory = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtCategoryDescription = new javax.swing.JTextArea();
+        btnCancelCategory = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -87,6 +101,11 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblCategories.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCategoriesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblCategories);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -95,7 +114,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -108,15 +127,89 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
 
+        jLabel1.setText("Id");
+
+        txtCategoryId.setEditable(false);
+
+        jlabel.setText("Name");
+
+        jLabel2.setText("Description");
+
+        btnNewCategory.setText("Add new");
+        btnNewCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewCategoryActionPerformed(evt);
+            }
+        });
+
+        btnSaveCategory.setText("Save");
+        btnSaveCategory.setToolTipText("");
+
+        btnDeleteCategory.setText("Delete");
+
+        txtCategoryDescription.setColumns(20);
+        txtCategoryDescription.setRows(5);
+        jScrollPane2.setViewportView(txtCategoryDescription);
+
+        btnCancelCategory.setText("Cancel");
+        btnCancelCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelCategoryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 380, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jlabel)
+                            .addComponent(jLabel1))
+                        .addGap(18, 43, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtCategoryName, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                            .addComponent(txtCategoryId)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnNewCategory)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSaveCategory)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDeleteCategory)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancelCategory)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 427, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtCategoryId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlabel)
+                    .addComponent(txtCategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeleteCategory)
+                    .addComponent(btnNewCategory)
+                    .addComponent(btnSaveCategory)
+                    .addComponent(btnCancelCategory))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -164,7 +257,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1053, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblWelcomeUser)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -191,14 +284,60 @@ public class ProductManagementForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowOpened
 
+    private void tblCategoriesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCategoriesMouseClicked
+        int index = tblCategories.getSelectedRow();
+        selectedCategory = categories.get(index);
+        displaySelectedCategory();
+    }//GEN-LAST:event_tblCategoriesMouseClicked
+
+    private void btnNewCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCategoryActionPerformed
+        isAddingNewCategory = true;
+        btnDeleteCategory.setEnabled(false);
+        txtCategoryId.setEditable(true);
+        txtCategoryId.setText("");
+        txtCategoryName.setText("");
+        txtCategoryDescription.setText("");
+        txtCategoryId.requestFocus();
+    }//GEN-LAST:event_btnNewCategoryActionPerformed
+
+    private void btnCancelCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelCategoryActionPerformed
+        isAddingNewCategory = false;
+        btnDeleteCategory.setEnabled(true);
+        displaySelectedCategory();
+    }//GEN-LAST:event_btnCancelCategoryActionPerformed
+
+    private void displaySelectedCategory() {
+        txtCategoryId.setEditable(false);
+        if (selectedCategory != null) {
+            txtCategoryId.setText(selectedCategory.getCategoryId());
+            txtCategoryName.setText(selectedCategory.getName());
+            txtCategoryDescription.setText(selectedCategory.getDescription());
+        } else {
+            txtCategoryId.setText("");
+            txtCategoryName.setText("");
+            txtCategoryDescription.setText("");
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelCategory;
+    private javax.swing.JButton btnDeleteCategory;
+    private javax.swing.JButton btnNewCategory;
+    private javax.swing.JButton btnSaveCategory;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel jlabel;
     private javax.swing.JLabel lblWelcomeUser;
     private javax.swing.JTable tblCategories;
+    private javax.swing.JTextArea txtCategoryDescription;
+    private javax.swing.JTextField txtCategoryId;
+    private javax.swing.JTextField txtCategoryName;
     // End of variables declaration//GEN-END:variables
 }
