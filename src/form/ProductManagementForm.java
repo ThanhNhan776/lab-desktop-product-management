@@ -333,9 +333,10 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 loadData();
                 btnCancelCategoryActionPerformed(null);
             } else if (selectedCategory != null) {
-                selectedCategory.setName(name);
-                selectedCategory.setDescription(description);
-                categoryDao.updateCategory(selectedCategory);
+                TblCategory category = new TblCategory(
+                        selectedCategory.getCategoryId(), name, description);
+                this.checkCategoryValidation(category);
+                categoryDao.updateCategory(category);
                 loadData();
                 btnCancelCategoryActionPerformed(null);
             }
