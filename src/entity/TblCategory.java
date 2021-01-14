@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package entity;
 
+import java.util.Objects;
 
 public class TblCategory {
+
     private String categoryId;
     private String name;
     private String description;
@@ -62,6 +63,22 @@ public class TblCategory {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        TblCategory category = (TblCategory) obj;
+        return category.getCategoryId().equals(categoryId);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.categoryId);
+        return hash;
+    }
 }

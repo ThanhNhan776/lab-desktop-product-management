@@ -51,6 +51,40 @@ public class TblCategoryDao {
         return null;
     }
     
+    public TblCategory getCategoryById(String id) throws SQLException, ClassNotFoundException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            con = DBUtils.getConnection();
+            if (con != null) {
+                String sql = "select categoryId, categoryName, description "
+                        + "from TblCategories "
+                        + "where categoryId = ?";
+                stm = con.prepareStatement(sql);
+                stm.setString(1, id);
+                rs = stm.executeQuery();
+                if (rs.next()) {
+                    String categoryId = rs.getString("categoryId");
+                    String name = rs.getString("categoryName");
+                    String description = rs.getString("description");
+                    return new TblCategory(categoryId, name, description);
+                }
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
+    
     public TblCategory saveCategory(TblCategory category) throws ClassNotFoundException, SQLException {
         Connection con = null;
         PreparedStatement stm = null;

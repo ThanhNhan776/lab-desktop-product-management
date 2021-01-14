@@ -14,6 +14,7 @@ import form.table.CategoriesTableModel;
 import form.table.ProductsTableModel;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
 public class ProductManagementForm extends javax.swing.JFrame {
@@ -42,9 +43,11 @@ public class ProductManagementForm extends javax.swing.JFrame {
         try {
             categories = categoryDao.getAllCategories();
             tblCategories.setModel(new CategoriesTableModel(categories));
-            
+
             products = productDao.getAllProducts();
             tblProducts.setModel(new ProductsTableModel(products));
+            
+            cbCategory.setModel(new DefaultComboBoxModel(categories.toArray()));
         } catch (SQLException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
@@ -293,6 +296,11 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblProducts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblProductsMouseClicked(evt);
+            }
+        });
         jScollPane.setViewportView(tblProducts);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -316,6 +324,8 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         jLabel3.setText("Id");
 
+        txtProductId.setEnabled(false);
+
         jLabel4.setText("Name");
 
         jLabel5.setText("Unit");
@@ -329,8 +339,10 @@ public class ProductManagementForm extends javax.swing.JFrame {
         cbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnCancelProduct.setText("Cancel");
+        btnCancelProduct.setEnabled(false);
 
         btnDeleteProduct.setText("Delete");
+        btnDeleteProduct.setEnabled(false);
 
         btnSaveProduct.setText("Save");
 
@@ -534,6 +546,13 @@ public class ProductManagementForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeleteCategoryActionPerformed
 
+    private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
+        int index = tblProducts.getSelectedRow();
+        selectedProduct = products.get(index);
+        btnDeleteProduct.setEnabled(true);
+        displaySelectedProduct();
+    }//GEN-LAST:event_tblProductsMouseClicked
+
     private void checkCategoryValidation(TblCategory category) throws Exception {
         if (category == null) {
             throw new Exception("Empty category!");
@@ -561,6 +580,33 @@ public class ProductManagementForm extends javax.swing.JFrame {
         txtCategoryId.setText("");
         txtCategoryName.setText("");
         txtCategoryDescription.setText("");
+    }
+
+    private void displaySelectedProduct() {
+        txtProductId.setEditable(false);
+        if (selectedProduct != null) {
+            try {
+                TblCategory category = categoryDao.getCategoryById(selectedProduct.getCategoryId());
+                txtProductId.setText(selectedProduct.getProductId());
+                txtProductName.setText(selectedProduct.getName());
+                txtProductPrice.setText(selectedProduct.getPrice() + "");
+                txtProductQuantity.setText(selectedProduct.getQuantity() + "");
+                txtProductUnit.setText(selectedProduct.getUnit());
+                cbCategory.setSelectedItem(category);
+            } catch (SQLException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        } else {
+            clearProductDetailsDisplay();
+        }
+    }
+
+    private void clearProductDetailsDisplay() {
+        txtProductId.setText("");
+        txtProductName.setText("");
+        txtProductPrice.setText("");
+        txtProductQuantity.setText("");
+        txtProductUnit.setText("");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
