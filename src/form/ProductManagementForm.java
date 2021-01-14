@@ -6,13 +6,14 @@
 package form;
 
 import dao.TblCategoryDao;
+import dao.TblProductDao;
 import entity.TblCategory;
+import entity.TblProduct;
 import entity.TblUser;
 import form.table.CategoriesTableModel;
+import form.table.ProductsTableModel;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class ProductManagementForm extends javax.swing.JFrame {
@@ -20,10 +21,14 @@ public class ProductManagementForm extends javax.swing.JFrame {
     private TblUser user;
     private List<TblCategory> categories;
     private TblCategory selectedCategory;
+    private List<TblProduct> products;
+    private TblProduct selectedProduct;
 
     private boolean isAddingNewCategory = false;
+    private boolean isAddingNewProduct = false;
 
-    private TblCategoryDao categoryDao = new TblCategoryDao();
+    private final TblCategoryDao categoryDao = new TblCategoryDao();
+    private final TblProductDao productDao = new TblProductDao();
 
     /**
      * Creates new form ProductManagementForm
@@ -37,6 +42,9 @@ public class ProductManagementForm extends javax.swing.JFrame {
         try {
             categories = categoryDao.getAllCategories();
             tblCategories.setModel(new CategoriesTableModel(categories));
+            
+            products = productDao.getAllProducts();
+            tblProducts.setModel(new ProductsTableModel(products));
         } catch (SQLException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
@@ -79,8 +87,8 @@ public class ProductManagementForm extends javax.swing.JFrame {
         btnCancelCategory = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        tblProducts = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScollPane = new javax.swing.JScrollPane();
+        tblProducts = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtProductId = new javax.swing.JTextField();
@@ -274,7 +282,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Products"));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -285,7 +293,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tblProducts.setViewportView(jTable1);
+        jScollPane.setViewportView(tblProducts);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -293,14 +301,14 @@ public class ProductManagementForm extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tblProducts, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+                .addComponent(jScollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tblProducts)
+                .addComponent(jScollPane)
                 .addContainerGap())
         );
 
@@ -579,14 +587,14 @@ public class ProductManagementForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScollPane;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel jlabel;
     private javax.swing.JLabel lblWelcomeUser;
     private javax.swing.JTable tblCategories;
-    private javax.swing.JScrollPane tblProducts;
+    private javax.swing.JTable tblProducts;
     private javax.swing.JTextArea txtCategoryDescription;
     private javax.swing.JTextField txtCategoryId;
     private javax.swing.JTextField txtCategoryName;
