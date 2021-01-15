@@ -346,6 +346,11 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         btnDeleteProduct.setText("Delete");
         btnDeleteProduct.setEnabled(false);
+        btnDeleteProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteProductActionPerformed(evt);
+            }
+        });
 
         btnSaveProduct.setText("Save");
         btnSaveProduct.addActionListener(new java.awt.event.ActionListener() {
@@ -606,7 +611,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 btnCancelProductActionPerformed(null);
             } else if (selectedProduct != null) {
                 TblProduct product = new TblProduct(
-                        selectedProduct.getProductId(), name, unit, price, 
+                        selectedProduct.getProductId(), name, unit, price,
                         quantity, category.getCategoryId());
                 this.checkProductValidation(product);
                 productDao.updateProduct(product);
@@ -618,6 +623,25 @@ public class ProductManagementForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveProductActionPerformed
+
+    private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
+        if (selectedProduct != null) {
+            try {
+                int response = JOptionPane.showConfirmDialog(null,
+                        "Do you want to delete this product?", "Delete",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (response == JOptionPane.NO_OPTION) {
+                    return;
+                }
+                productDao.deleteProduct(selectedProduct);
+                loadData();
+                this.selectedProduct = null;
+                btnCancelProductActionPerformed(null);
+            } catch (SQLException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnDeleteProductActionPerformed
 
     private int parseInt(String number) throws Exception {
         try {
