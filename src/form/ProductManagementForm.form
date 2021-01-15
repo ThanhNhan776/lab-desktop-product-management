@@ -308,7 +308,6 @@
                 <Component class="javax.swing.JButton" name="btnCancelCategory">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Cancel"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelCategoryActionPerformed"/>
@@ -513,7 +512,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtProductId">
                   <Properties>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="editable" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel4">
@@ -567,8 +566,10 @@
                 <Component class="javax.swing.JButton" name="btnCancelProduct">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Cancel"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelProductActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnDeleteProduct">
                   <Properties>
@@ -580,11 +581,17 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Save"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveProductActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnNewProduct">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Add new"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNewProductActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

@@ -46,7 +46,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
             products = productDao.getAllProducts();
             tblProducts.setModel(new ProductsTableModel(products));
-            
+
             cbCategory.setModel(new DefaultComboBoxModel(categories.toArray()));
         } catch (SQLException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -197,7 +197,6 @@ public class ProductManagementForm extends javax.swing.JFrame {
         jScrollPane2.setViewportView(txtCategoryDescription);
 
         btnCancelCategory.setText("Cancel");
-        btnCancelCategory.setEnabled(false);
         btnCancelCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelCategoryActionPerformed(evt);
@@ -324,7 +323,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
 
         jLabel3.setText("Id");
 
-        txtProductId.setEnabled(false);
+        txtProductId.setEditable(false);
 
         jLabel4.setText("Name");
 
@@ -339,14 +338,28 @@ public class ProductManagementForm extends javax.swing.JFrame {
         cbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnCancelProduct.setText("Cancel");
-        btnCancelProduct.setEnabled(false);
+        btnCancelProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelProductActionPerformed(evt);
+            }
+        });
 
         btnDeleteProduct.setText("Delete");
         btnDeleteProduct.setEnabled(false);
 
         btnSaveProduct.setText("Save");
+        btnSaveProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveProductActionPerformed(evt);
+            }
+        });
 
         btnNewProduct.setText("Add new");
+        btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewProductActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -487,7 +500,6 @@ public class ProductManagementForm extends javax.swing.JFrame {
         isAddingNewCategory = true;
         btnNewCategory.setEnabled(false);
         btnDeleteCategory.setEnabled(false);
-        btnCancelCategory.setEnabled(true);
         txtCategoryId.setEditable(true);
         txtCategoryId.setText("");
         txtCategoryName.setText("");
@@ -499,7 +511,6 @@ public class ProductManagementForm extends javax.swing.JFrame {
         isAddingNewCategory = false;
         btnNewCategory.setEnabled(true);
         btnDeleteCategory.setEnabled(selectedCategory != null);
-        btnCancelCategory.setEnabled(false);
         displaySelectedCategory();
     }//GEN-LAST:event_btnCancelCategoryActionPerformed
 
@@ -513,6 +524,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 this.checkCategoryValidation(category);
                 categoryDao.saveCategory(category);
                 loadData();
+                selectedCategory = category;
                 btnCancelCategoryActionPerformed(null);
             } else if (selectedCategory != null) {
                 TblCategory category = new TblCategory(
@@ -520,6 +532,7 @@ public class ProductManagementForm extends javax.swing.JFrame {
                 this.checkCategoryValidation(category);
                 categoryDao.updateCategory(category);
                 loadData();
+                selectedCategory = category;
                 btnCancelCategoryActionPerformed(null);
             }
         } catch (Exception ex) {
@@ -553,6 +566,75 @@ public class ProductManagementForm extends javax.swing.JFrame {
         displaySelectedProduct();
     }//GEN-LAST:event_tblProductsMouseClicked
 
+    private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
+        isAddingNewProduct = true;
+        btnNewProduct.setEnabled(false);
+        btnDeleteProduct.setEnabled(false);
+        txtProductId.setEditable(true);
+        clearProductDetailsDisplay();
+        if (categories != null && categories.size() > 0) {
+            cbCategory.setSelectedIndex(0);
+        }
+
+        txtProductId.requestFocus();
+    }//GEN-LAST:event_btnNewProductActionPerformed
+
+    private void btnCancelProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelProductActionPerformed
+        isAddingNewProduct = false;
+        btnNewProduct.setEnabled(true);
+        btnDeleteProduct.setEnabled(selectedProduct != null);
+        displaySelectedProduct();
+    }//GEN-LAST:event_btnCancelProductActionPerformed
+
+    private void btnSaveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveProductActionPerformed
+        String id = txtProductId.getText();
+        String name = txtProductName.getText();
+        String unit = txtProductUnit.getText();
+        String quantityStr = txtProductQuantity.getText();
+        String priceStr = txtProductPrice.getText();
+        TblCategory category = (TblCategory) cbCategory.getSelectedItem();
+        try {
+            int quantity = parseInt(quantityStr);
+            float price = parseFloat(priceStr);
+            if (isAddingNewProduct) {
+                TblProduct product = new TblProduct(id, name, unit, price,
+                        quantity, category.getCategoryId());
+                this.checkProductValidation(product);
+                productDao.saveProduct(product);
+                loadData();
+                selectedProduct = product;
+                btnCancelProductActionPerformed(null);
+            } else if (selectedProduct != null) {
+                TblProduct product = new TblProduct(
+                        selectedProduct.getProductId(), name, unit, price, 
+                        quantity, category.getCategoryId());
+                this.checkProductValidation(product);
+                productDao.updateProduct(product);
+                loadData();
+                selectedProduct = product;
+                btnCancelProductActionPerformed(null);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }//GEN-LAST:event_btnSaveProductActionPerformed
+
+    private int parseInt(String number) throws Exception {
+        try {
+            return Integer.parseInt(number);
+        } catch (NumberFormatException ex) {
+            throw new Exception("'" + number + "' is not a valid number!");
+        }
+    }
+
+    private float parseFloat(String number) throws Exception {
+        try {
+            return Float.parseFloat(number);
+        } catch (NumberFormatException ex) {
+            throw new Exception("'" + number + "' is not a valid number!");
+        }
+    }
+
     private void checkCategoryValidation(TblCategory category) throws Exception {
         if (category == null) {
             throw new Exception("Empty category!");
@@ -562,6 +644,21 @@ public class ProductManagementForm extends javax.swing.JFrame {
         }
         if (category.getName() == null || category.getName().isEmpty()) {
             throw new Exception("Name must not be empty!");
+        }
+    }
+
+    private void checkProductValidation(TblProduct product) throws Exception {
+        if (product == null) {
+            throw new Exception("Empty product!");
+        }
+        if (product.getProductId() == null || product.getProductId().isEmpty()) {
+            throw new Exception("Id must not be empty!");
+        }
+        if (product.getName() == null || product.getName().isEmpty()) {
+            throw new Exception("Name must not be empty!");
+        }
+        if (product.getUnit() == null || product.getUnit().isEmpty()) {
+            throw new Exception("Unit must not be empty!");
         }
     }
 

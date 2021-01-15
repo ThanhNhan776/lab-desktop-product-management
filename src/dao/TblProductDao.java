@@ -104,7 +104,7 @@ public class TblProductDao {
                 stm.setFloat(3, product.getPrice());
                 stm.setInt(4, product.getQuantity());
                 stm.setString(5, product.getCategoryId());
-                stm.setString(5, product.getProductId());
+                stm.setString(6, product.getProductId());
                 int result = stm.executeUpdate();
                 if (result == 1) {
                     return product;
