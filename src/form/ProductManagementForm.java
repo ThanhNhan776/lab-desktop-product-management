@@ -684,6 +684,12 @@ public class ProductManagementForm extends javax.swing.JFrame {
         if (product.getUnit() == null || product.getUnit().isEmpty()) {
             throw new Exception("Unit must not be empty!");
         }
+        if (product.getPrice() < 0) {
+            throw new Exception("Price must be a non-negative number!");
+        }
+        if (product.getQuantity() < 0) {
+            throw new Exception("Quantity must be a non-negative number!");
+        }
     }
 
     private void displaySelectedCategory() {
